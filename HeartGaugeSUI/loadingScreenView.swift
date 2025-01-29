@@ -12,7 +12,7 @@ struct HeartbeatLoadingView: View {
     
     var body: some View {
         VStack {
-            Image("loadingIcon") // Ensure you add the image to your Assets
+            Image("Untitled-2-removebg-preview")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 150, height: 150)

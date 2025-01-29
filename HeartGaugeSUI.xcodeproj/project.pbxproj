@@ -7,18 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F4057AD62D3ADB8200410732 /* Jomhuria-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4057AD52D3ADB8200410732 /* Jomhuria-Regular.ttf */; };
+		F4110D9D2D47F05A009837AE /* RecentlyPlayed.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4110D9C2D47F05A009837AE /* RecentlyPlayed.swift */; };
+		F4110D9F2D495495009837AE /* SettingsUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4110D9E2D495495009837AE /* SettingsUI.swift */; };
+		F4110DA12D49563B009837AE /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4110DA02D49563B009837AE /* SignUpView.swift */; };
+		F4110DA32D495D0D009837AE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4110DA22D495D0D009837AE /* ProfileView.swift */; };
 		F459CD0C2D38405C0085F721 /* HeartGaugeSUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F459CD0B2D38405C0085F721 /* HeartGaugeSUIApp.swift */; };
 		F459CD0E2D38405C0085F721 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F459CD0D2D38405C0085F721 /* ContentView.swift */; };
-		F459CD102D38405E0085F721 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F459CD0F2D38405E0085F721 /* Assets.xcassets */; };
 		F459CD132D38405E0085F721 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F459CD122D38405E0085F721 /* Preview Assets.xcassets */; };
+		F46FFD782D4AA9B000B12353 /* loadingScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46FFD772D4AA9B000B12353 /* loadingScreenView.swift */; };
+		F4CCC1F22D398F3200F6520C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4CCC1F12D398F3100F6520C /* Assets.xcassets */; };
+		F4CCC1F42D39904900F6520C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CCC1F32D39904900F6520C /* HomeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F4057AD32D3AD98600410732 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F4057AD52D3ADB8200410732 /* Jomhuria-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Jomhuria-Regular.ttf"; sourceTree = "<group>"; };
+		F4110D9C2D47F05A009837AE /* RecentlyPlayed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyPlayed.swift; sourceTree = "<group>"; };
+		F4110D9E2D495495009837AE /* SettingsUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsUI.swift; sourceTree = "<group>"; };
+		F4110DA02D49563B009837AE /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		F4110DA22D495D0D009837AE /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		F459CD082D38405C0085F721 /* HeartGaugeSUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HeartGaugeSUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F459CD0B2D38405C0085F721 /* HeartGaugeSUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartGaugeSUIApp.swift; sourceTree = "<group>"; };
 		F459CD0D2D38405C0085F721 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		F459CD0F2D38405E0085F721 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F459CD122D38405E0085F721 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F46FFD772D4AA9B000B12353 /* loadingScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = loadingScreenView.swift; sourceTree = "<group>"; };
+		F4CCC1F12D398F3100F6520C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F4CCC1F32D39904900F6520C /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,9 +66,17 @@
 		F459CD0A2D38405C0085F721 /* HeartGaugeSUI */ = {
 			isa = PBXGroup;
 			children = (
+				F4057AD32D3AD98600410732 /* Info.plist */,
 				F459CD0B2D38405C0085F721 /* HeartGaugeSUIApp.swift */,
 				F459CD0D2D38405C0085F721 /* ContentView.swift */,
-				F459CD0F2D38405E0085F721 /* Assets.xcassets */,
+				F4110DA02D49563B009837AE /* SignUpView.swift */,
+				F4CCC1F32D39904900F6520C /* HomeView.swift */,
+				F4110D9C2D47F05A009837AE /* RecentlyPlayed.swift */,
+				F46FFD772D4AA9B000B12353 /* loadingScreenView.swift */,
+				F4110D9E2D495495009837AE /* SettingsUI.swift */,
+				F4110DA22D495D0D009837AE /* ProfileView.swift */,
+				F4057AD52D3ADB8200410732 /* Jomhuria-Regular.ttf */,
+				F4CCC1F12D398F3100F6520C /* Assets.xcassets */,
 				F459CD112D38405E0085F721 /* Preview Content */,
 			);
 			path = HeartGaugeSUI;
@@ -125,8 +148,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4CCC1F22D398F3200F6520C /* Assets.xcassets in Resources */,
 				F459CD132D38405E0085F721 /* Preview Assets.xcassets in Resources */,
-				F459CD102D38405E0085F721 /* Assets.xcassets in Resources */,
+				F4057AD62D3ADB8200410732 /* Jomhuria-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,7 +161,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4110D9D2D47F05A009837AE /* RecentlyPlayed.swift in Sources */,
+				F4CCC1F42D39904900F6520C /* HomeView.swift in Sources */,
 				F459CD0E2D38405C0085F721 /* ContentView.swift in Sources */,
+				F46FFD782D4AA9B000B12353 /* loadingScreenView.swift in Sources */,
+				F4110D9F2D495495009837AE /* SettingsUI.swift in Sources */,
+				F4110DA12D49563B009837AE /* SignUpView.swift in Sources */,
+				F4110DA32D495D0D009837AE /* ProfileView.swift in Sources */,
 				F459CD0C2D38405C0085F721 /* HeartGaugeSUIApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -274,6 +304,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"HeartGaugeSUI/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HeartGaugeSUI/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -302,6 +333,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"HeartGaugeSUI/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HeartGaugeSUI/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
