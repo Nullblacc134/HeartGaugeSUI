@@ -7,11 +7,14 @@
 
 import SwiftUI
 
-struct HeartbeatLoadingView: View {
+struct loadingScreenViewUI: View {
     @State private var scale: CGFloat = 1.0
     
     var body: some View {
-        VStack {
+        
+        ZStack {
+            Color(red: 0.4, green: 0.4, blue: 0.9)
+                .ignoresSafeArea()
             Image("Untitled-2-removebg-preview")
                 .resizable()
                 .scaledToFit()
@@ -27,5 +30,5 @@ struct HeartbeatLoadingView: View {
 
 
 #Preview {
-    HeartbeatLoadingView()
+    loadingScreenViewUI()
 }

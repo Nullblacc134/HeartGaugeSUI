@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SignUpView: View {
+struct SignUpViewUI: View {
     @State private var firstName: String = ""
     @State private var lastName: String = ""
     @State private var username: String = ""
@@ -16,7 +16,6 @@ struct SignUpView: View {
     @State private var phoneNumber: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
-    
     var body: some View {
         ZStack {
             // Background color
@@ -47,9 +46,8 @@ struct SignUpView: View {
                         SecureTextField(placeholder: "Confirm Password", text: $confirmPassword)
                     }
                     
-                    // Sign Up Button
                     Button(action: {
-                        // Add sign up action
+                       
                     }) {
                         Text("Sign Up")
                             .frame(maxWidth: .infinity)
@@ -109,5 +107,5 @@ struct SecureTextField: View {
 
 
 #Preview {
-    SignUpView()
+    SignUpViewUI()
 }

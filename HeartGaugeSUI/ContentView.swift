@@ -16,7 +16,7 @@ struct MainTabView: View {
                     case 0:
                         HomeViewUI()
                     case 1:
-                        GamingLogsView()
+                        RecentlyPlayedUI()
                     default:
                         EmptyView()
                     }
@@ -89,11 +89,12 @@ struct SettingsView: View {
 }
 
 // Updated ContentView to include navigation after login
-struct ContentView: View {
+struct ContentViewUI: View {
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var isLoggedIn: Bool = false
-    
+    @State private var isActive: Bool = false
+
     var body: some View {
         NavigationView {
             
@@ -144,9 +145,7 @@ struct ContentView: View {
                         }
                         
                         // Register button
-                        Button(action: {
-                            //action needed
-                        }) {
+                        NavigationLink(destination: SignUpViewUI()) {
                             Text("Register New Account")
                                 .frame(maxWidth: 280)
                                 .padding()
@@ -154,11 +153,11 @@ struct ContentView: View {
                                 .cornerRadius(8)
                                 .foregroundColor(.white)
                         }
+
                         
                         // Forgot password link
-                        Button(action: {
-                            // Add forgot password action
-                        }) {
+                        NavigationLink(destination: ForgotPasswordViewUI()) {
+//                             Add forgot password action
                             Text("Forgot Password")
                                 .foregroundColor(.black)
                                 .underline()
@@ -204,6 +203,6 @@ struct Line: View {
     }
 }
 #Preview{
-    ContentView()
+    ContentViewUI()
 }
 

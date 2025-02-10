@@ -11,7 +11,7 @@ import SwiftUI
 struct HeartGaugeSUIApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentViewUI()
         }
     }
 }

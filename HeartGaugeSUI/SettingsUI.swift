@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SettingsUI: View {
+struct Settings: View {
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -101,5 +101,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    SettingsUI()
+    Settings()
 }

@@ -16,8 +16,8 @@ struct GameLog {
     let minHeartRate: Int
 }
 
-struct GamingLogsView: View {
-    // Sample data
+struct RecentlyPlayedUI: View {
+    //  data
     let gameLogs = [
         GameLog(gameName: "Roblox", imageName: "roblox", time: "3 hrs", maxHeartRate: 120, minHeartRate: 80),
         GameLog(gameName: "League of Legends", imageName: "lol", time: "1 hr", maxHeartRate: 140, minHeartRate: 100),
@@ -104,5 +104,5 @@ struct GameLogRow: View {
 }
 
 #Preview {
-    GamingLogsView()
+    RecentlyPlayedUI()
 }
