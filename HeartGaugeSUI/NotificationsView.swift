@@ -51,13 +51,9 @@ struct NotificationsView: View {
                 }
                 
                 Section {
-                    HStack {
-                        
+                    VStack {
                         Text("Missing notifications?")
-                        Spacer()
                         Link("Go to historical notifications", destination: URL(string: "notifications://history")!)
-                            .background((Color(red: 0.4, green: 0.4, blue: 0.9))
-                            )
                     }
                 }
             }
@@ -109,12 +105,12 @@ struct NotificationRow: View {
                     
                     Text(formatDate(notification.date))
                         .font(.system(size: 14))
-                        .foregroundColor(.gray)
+                        .foregroundColor(.black)
                 }
                 
                 Text(notification.message)
                     .font(.system(size: 14))
-                    .foregroundColor(.gray)
+                    .foregroundColor(.black)
                     .lineLimit(3)
             }
         }
