@@ -6,12 +6,39 @@
 //
 
 import SwiftUI
+import GoogleSignIn
 
 @main
-struct HeartGaugeSUIApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentViewUI()
-        }
-    }
-}
+struct MyApp: App {
+    
+    init() {
+
+              GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+
+                  if let user = user {
+
+                      print("Restored session for: \(user.profile?.name ?? "Unknown")")
+
+                  } else {
+
+                      print("No previous session found.")
+
+                  }
+
+              }
+
+          }
+
+
+
+          var body: some Scene {
+
+              WindowGroup {
+
+                  GoogleSignInButtonView()
+
+              }
+
+          }
+
+      }

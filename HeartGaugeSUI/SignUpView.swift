@@ -106,6 +106,6 @@ struct SecureTextField: View {
 // Custom line for divider
 
 
-#Preview {
+#Preview{
     SignUpViewUI()
 }

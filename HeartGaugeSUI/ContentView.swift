@@ -1,7 +1,11 @@
 import SwiftUI
+import GoogleSignIn
 
 struct MainTabView: View {
     @State private var selectedTab = 0
+    let username: String // Receive the username
+
+    let signOut: () -> Void // Closure to handle sign-out
     
     var body: some View {
         NavigationView {
@@ -14,7 +18,7 @@ struct MainTabView: View {
                     // Content area
                     switch selectedTab {
                     case 0:
-                        HomeViewUI()
+                        HomeViewUI(username: username, signOut: signOut)
                     case 1:
                         RecentlyPlayedUI()
                     default:
@@ -90,11 +94,13 @@ struct SettingsView: View {
 
 // Updated ContentView to include navigation after login
 struct ContentViewUI: View {
-    @State private var username: String = ""
+   @State private var username: String = ""
     @State private var password: String = ""
     @State private var isLoggedIn: Bool = false
     @State private var isActive: Bool = false
+//    let username: String // Receive the username
 
+    let signOut: () -> Void 
     var body: some View {
         NavigationView {
             
@@ -104,7 +110,7 @@ struct ContentViewUI: View {
                     .ignoresSafeArea()
                 
                 if isLoggedIn {
-                    MainTabView()
+                    MainTabView(username: username, signOut: signOut)
                 } else {
                     // Your existing login view content
                     VStack(spacing: 20) {
@@ -153,11 +159,11 @@ struct ContentViewUI: View {
                                 .cornerRadius(8)
                                 .foregroundColor(.white)
                         }
-
+                        
                         
                         // Forgot password link
                         NavigationLink(destination: ForgotPasswordViewUI()) {
-//                             Add forgot password action
+                            //                             Add forgot password action
                             Text("Forgot Password")
                                 .foregroundColor(.black)
                                 .underline()
@@ -171,7 +177,7 @@ struct ContentViewUI: View {
                         }
                         .padding(.vertical)
                         Button(action: {
-                            // Add Google sign up action
+                            handleSignupButton()
                         }) {
                             HStack {
                                 Image(systemName: "g.circle.fill")
@@ -183,7 +189,7 @@ struct ContentViewUI: View {
                             .padding()
                             .background(Color.white.opacity(0.2))
                             .cornerRadius(8)
-                     
+                            
                         }
                         Spacer()
                     }
@@ -192,8 +198,29 @@ struct ContentViewUI: View {
             }
             .navigationBarHidden(true)
         }
+        
     }
-}
+        func handleSignupButton() {
+            print("sign in with google clicked")
+            
+            if let rootViewController = getRootViewController(){
+                
+            
+            GIDSignIn.sharedInstance.signIn(
+                withPresenting: rootViewController
+            ){ result, error in
+                guard let result else{
+                    return
+                }
+                print(result.user.profile?.name ?? "d" as Any)
+//                print(result.user.profile?.email, ??"default value!" as Any)
+//                print(result.user.profile?.imageURL(withDimension: 200) ?? "d"! as Any)
+            }
+        }
+            
+        }
+    }
+
 
 struct Line: View {
     var body: some View {
@@ -202,7 +229,34 @@ struct Line: View {
             .foregroundColor(.black.opacity(0.5))
     }
 }
-#Preview{
-    ContentViewUI()
-}
 
+func getRootViewController() -> UIViewController? {
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let rootViewController = scene.windows.first?.rootViewController else {
+            return nil
+        }
+        
+        return getVisibleViewController(from: rootViewController)
+    }
+    
+    /// Recursively traverses the view controller hierarchy to find the topmost visible controller.
+    /// - Parameter vc: The starting view controller to traverse from
+    /// - Returns: The currently visible view controller
+private func getVisibleViewController(from vc: UIViewController) -> UIViewController {
+        if let nav = vc as? UINavigationController {
+            return getVisibleViewController(from: nav.visibleViewController!)
+        }
+        
+        if let tab = vc as? UITabBarController {
+            return getVisibleViewController(from: tab.selectedViewController!)
+        }
+        
+        if let presented = vc.presentedViewController {
+            return getVisibleViewController(from: presented)
+        }
+        
+        return vc
+    }
+#Preview {
+    ContentViewUI(signOut: {})
+}

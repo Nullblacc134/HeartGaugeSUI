@@ -82,7 +82,7 @@ struct SettingsButton: View {
 }
 
 // Example of how to use in HomeView
-struct HomeView: View {
+struct HomeView2: View {
     var body: some View {
         NavigationView {
             VStack {

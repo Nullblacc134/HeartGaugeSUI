@@ -8,12 +8,20 @@
 import SwiftUI
 
 struct HomeViewUI: View {
+    let username: String // Receive the username
+
+    let signOut: () -> Void // Closure to handle sign-out
+
     var body: some View {
             ZStack {
                 // Background
                 Color(red: 0.4, green: 0.4, blue: 0.9)
                     .ignoresSafeArea()
-                
+                Button("Sign Out") {
+
+                    signOut()
+
+                }
                 VStack(alignment: .leading, spacing: 20) {
                     // Header
                     HStack {
@@ -135,6 +143,6 @@ struct HomeViewUI: View {
         }
     }
 
-#Preview {
-    HomeViewUI()
-}
+//#Preview {
+//    HomeViewUI()
+//}
