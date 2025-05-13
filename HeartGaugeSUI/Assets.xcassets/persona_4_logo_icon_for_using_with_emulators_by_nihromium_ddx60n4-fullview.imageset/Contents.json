@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "persona_4_logo_icon_for_using_with_emulators_by_nihromium_ddx60n4-fullview.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
