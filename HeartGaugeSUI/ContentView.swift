@@ -18,7 +18,7 @@ struct MainTabView: View {
                     // Content area
                     switch selectedTab {
                     case 0:
-                        HomeViewUI(username: username, signOut: signOut)
+                        HomeViewUI()
                     case 1:
                         RecentlyPlayedUI()
                     default:
@@ -92,6 +92,8 @@ struct SettingsView: View {
     }
 }
 
+
+
 // Updated ContentView to include navigation after login
 struct ContentViewUI: View {
    @State private var username: String = ""
@@ -99,13 +101,14 @@ struct ContentViewUI: View {
     @State private var isLoggedIn: Bool = false
     @State private var isActive: Bool = false
 //    let username: String // Receive the username
+    @State private var showSplash = true
 
-    let signOut: () -> Void 
+    let signOut: () -> Void
     var body: some View {
         NavigationView {
             
             ZStack {
-                // Background color
+                
                 Color(red: 0.4, green: 0.4, blue: 0.9)
                     .ignoresSafeArea()
                 
@@ -177,7 +180,7 @@ struct ContentViewUI: View {
                         }
                         .padding(.vertical)
                         Button(action: {
-                            handleSignupButton()
+//                            handleSignupButton()
                         }) {
                             HStack {
                                 Image(systemName: "g.circle.fill")
@@ -197,30 +200,27 @@ struct ContentViewUI: View {
                 }
             }
             .navigationBarHidden(true)
-        }
-        
-    }
-        func handleSignupButton() {
-            print("sign in with google clicked")
-            
-            if let rootViewController = getRootViewController(){
-                
-            
-            GIDSignIn.sharedInstance.signIn(
-                withPresenting: rootViewController
-            ){ result, error in
-                guard let result else{
-                    return
-                }
-                print(result.user.profile?.name ?? "d" as Any)
-//                print(result.user.profile?.email, ??"default value!" as Any)
-//                print(result.user.profile?.imageURL(withDimension: 200) ?? "d"! as Any)
             }
         }
-            
-        }
     }
-
+//        func handleSignupButton() {
+//            print("sign in with google clicked")
+//            
+//            if let rootViewController = getRootViewController(){
+                
+//            
+//            GIDSignIn.sharedInstance.signIn(
+//                withPresenting: rootViewController
+//            ){ result, error in
+//                guard let result else{
+//                    return
+//                }
+//                print(result.user.profile?.name ?? "d" as Any)
+//                print(result.user.profile?.email, ??"default value!" as Any)
+////                print(result.user.profile?.imageURL(withDimension: 200) ?? "d"! as Any)
+//            }
+//        }
+//    }
 
 struct Line: View {
     var body: some View {
@@ -230,33 +230,33 @@ struct Line: View {
     }
 }
 
-func getRootViewController() -> UIViewController? {
-        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let rootViewController = scene.windows.first?.rootViewController else {
-            return nil
-        }
-        
-        return getVisibleViewController(from: rootViewController)
-    }
-    
+//func getRootViewController() -> UIViewController? {
+//        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//              let rootViewController = scene.windows.first?.rootViewController else {
+//            return nil
+//        }
+//        
+//        return getVisibleViewController(from: rootViewController)
+//    }
+//    
     /// Recursively traverses the view controller hierarchy to find the topmost visible controller.
     /// - Parameter vc: The starting view controller to traverse from
     /// - Returns: The currently visible view controller
-private func getVisibleViewController(from vc: UIViewController) -> UIViewController {
-        if let nav = vc as? UINavigationController {
-            return getVisibleViewController(from: nav.visibleViewController!)
-        }
-        
-        if let tab = vc as? UITabBarController {
-            return getVisibleViewController(from: tab.selectedViewController!)
-        }
-        
-        if let presented = vc.presentedViewController {
-            return getVisibleViewController(from: presented)
-        }
-        
-        return vc
-    }
+//private func getVisibleViewController(from vc: UIViewController) -> UIViewController {
+//        if let nav = vc as? UINavigationController {
+//            return getVisibleViewController(from: nav.visibleViewController!)
+//        }
+//        
+//        if let tab = vc as? UITabBarController {
+//            return getVisibleViewController(from: tab.selectedViewController!)
+//        }
+//        
+//        if let presented = vc.presentedViewController {
+//            return getVisibleViewController(from: presented)
+//        }
+//        
+//        return vc
+//    }
 #Preview {
     ContentViewUI(signOut: {})
 }

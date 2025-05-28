@@ -29,11 +29,7 @@ struct GoogleSignInButtonView: View {
 
                 if isLoggedIn {
 
-                    HomeViewUI(username: user?.profile?.name ?? "User", signOut: {
-
-                        signOut()
-
-                    })
+                    HomeViewUI()
 
                 } else {
 
