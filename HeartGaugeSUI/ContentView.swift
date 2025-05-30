@@ -18,7 +18,7 @@ struct MainTabView: View {
                     // Content area
                     switch selectedTab {
                     case 0:
-                        HomeViewUI()
+                        HealthDashboardView()
                     case 1:
                         RecentlyPlayedUI()
                     default:

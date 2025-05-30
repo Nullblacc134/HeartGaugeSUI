@@ -1,96 +1,163 @@
-
 import SwiftUI
+import HealthKit
+import Charts
 
-// MARK: - Game Model and Data Service
+// MARK: - HealthKit Manager
 
-struct Game: Identifiable {
-    let id = UUID()
-    let title: String
-    let playTime: String
-    let imageUrl: String
-}
-
-class GameDataService: ObservableObject {
-    @Published var currentlyPlaying: Game?
-    @Published var recentlyPlayed: [Game] = []
-    private var imageBaseUrl: String = "https://yourapi.com/images/"
+class HealthKitManager: ObservableObject {
+    static let shared = HealthKitManager()
+    private let healthStore = HKHealthStore()
+    private var heartRateQuery: HKAnchoredObjectQuery?
+    private var heartRateAnchor: HKQueryAnchor?
     
-    init() {
-        // Initialize with sample data
-        loadSampleData()
-    }
+    @Published var currentHeartRate: Double?
+    @Published var heartRateTimestamp: Date?
+    @Published var steps: Double?
+    @Published var activeEnergy: Double?
+    @Published var heartRateSamples: [HKQuantitySample] = []
     
-    func updateImageBaseUrl(newBaseUrl: String) {
-        self.imageBaseUrl = newBaseUrl
-    }
-    
-    private func loadSampleData() {
-        // Sample current game
-        currentlyPlaying = Game(
-            title: "Cyberpunk 2077",
-            playTime: "2 hours played today",
-            imageUrl: "\(imageBaseUrl)cyberpunk.jpg"
-        )
+    // MARK: - Authorization
+    func requestAuthorization(completion: @escaping (Bool, Error?) -> Void) {
+        guard HKHealthStore.isHealthDataAvailable() else {
+            completion(false, nil)
+            return
+        }
         
-        // Sample recently played games
-        recentlyPlayed = [
-            Game(
-                title: "Elden Ring",
-                playTime: "Last played yesterday",
-                imageUrl: "\(imageBaseUrl)elden-ring.jpg"
-            ),
-            Game(
-                title: "The Witcher 3",
-                playTime: "Last played 3 days ago",
-                imageUrl: "\(imageBaseUrl)witcher3.jpg"
-            ),
-            Game(
-                title: "Red Dead Redemption 2",
-                playTime: "Last played 1 week ago",
-                imageUrl: "\(imageBaseUrl)rdr2.jpg"
-            )
+        let readTypes: Set<HKObjectType> = [
+            HKObjectType.quantityType(forIdentifier: .stepCount)!,
+            HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!,
+            HKObjectType.quantityType(forIdentifier: .heartRate)!
         ]
-    }
-}
-
-// MARK: - CachedRemoteImage Component
-
-struct CachedRemoteImage: View {
-    let url: String
-    var placeholder: String = "photo"
-    
-    var body: some View {
-        // This is a simplified version for demonstration
-        // In a real app, you'd implement proper image caching and error handling
-        AsyncImage(url: URL(string: url)) { phase in
-            switch phase {
-            case .empty:
-                Image(systemName: placeholder)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(.white.opacity(0.5))
-            case .success(let image):
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            case .failure:
-                Image(systemName: "exclamationmark.triangle")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(.white.opacity(0.5))
-            @unknown default:
-                Image(systemName: placeholder)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(.white.opacity(0.5))
-            }
+        
+        healthStore.requestAuthorization(toShare: [], read: readTypes) { success, error in
+            completion(success, error)
         }
     }
+    
+    // MARK: - Step Count
+    func fetchStepCount() {
+        guard let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }
+        
+        let startOfDay = Calendar.current.startOfDay(for: Date())
+        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: Date())
+        
+        let query = HKStatisticsQuery(quantityType: stepType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, error in
+            DispatchQueue.main.async {
+                if let result = result, let sum = result.sumQuantity() {
+                    self.steps = sum.doubleValue(for: HKUnit.count())
+                }
+            }
+        }
+        healthStore.execute(query)
+    }
+    
+    // MARK: - Active Energy
+    func fetchActiveEnergyBurned() {
+        guard let energyType = HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned) else { return }
+        
+        let startOfDay = Calendar.current.startOfDay(for: Date())
+        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: Date())
+        
+        let query = HKStatisticsQuery(quantityType: energyType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, error in
+            DispatchQueue.main.async {
+                if let result = result, let sum = result.sumQuantity() {
+                    self.activeEnergy = sum.doubleValue(for: HKUnit.kilocalorie())
+                }
+            }
+        }
+        healthStore.execute(query)
+    }
+    
+    // MARK: - Heart Rate Samples (Last 24 Hours)
+    func fetchHeartRateSamples() {
+        guard let heartRateType = HKQuantityType.quantityType(forIdentifier: .heartRate) else { return }
+        
+        let startDate = Calendar.current.date(byAdding: .hour, value: -24, to: Date())!
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: Date())
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
+        
+        let query = HKSampleQuery(sampleType: heartRateType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { _, results, error in
+            DispatchQueue.main.async {
+                if let quantitySamples = results as? [HKQuantitySample] {
+                    self.heartRateSamples = quantitySamples
+                }
+            }
+        }
+        healthStore.execute(query)
+    }
+    
+    // MARK: - Most Recent Heart Rate Sample
+    func fetchLatestHeartRateSample() {
+        guard let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate) else { return }
+        
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
+        
+        let query = HKSampleQuery(sampleType: heartRateType, predicate: nil, limit: 1, sortDescriptors: [sortDescriptor]) { _, results, error in
+            DispatchQueue.main.async {
+                if let sample = results?.first as? HKQuantitySample {
+                    let bpm = sample.quantity.doubleValue(for: HKUnit(from: "count/min"))
+                    self.currentHeartRate = bpm
+                    self.heartRateTimestamp = sample.startDate
+                }
+            }
+        }
+        healthStore.execute(query)
+    }
+    
+    // MARK: - Live Heart Rate Updates
+    func startLiveHeartRateUpdates() {
+        guard let heartRateType = HKQuantityType.quantityType(forIdentifier: .heartRate) else { return }
+        
+        let predicate = HKQuery.predicateForSamples(withStart: Date().addingTimeInterval(-3600), end: nil)
+        
+        let query = HKAnchoredObjectQuery(type: heartRateType, predicate: predicate, anchor: heartRateAnchor, limit: HKObjectQueryNoLimit) { _, samples, _, newAnchor, _ in
+            self.handleHeartRateSamples(samples, anchor: newAnchor)
+        }
+        
+        query.updateHandler = { _, samples, _, newAnchor, _ in
+            self.handleHeartRateSamples(samples, anchor: newAnchor)
+        }
+        
+        heartRateQuery = query
+        healthStore.execute(query)
+    }
+    
+    private func handleHeartRateSamples(_ samples: [HKSample]?, anchor: HKQueryAnchor?) {
+        guard let samples = samples as? [HKQuantitySample] else { return }
+        
+        DispatchQueue.main.async {
+            for sample in samples {
+                let bpm = sample.quantity.doubleValue(for: HKUnit(from: "count/min"))
+                let date = sample.startDate
+                self.currentHeartRate = bpm
+                self.heartRateTimestamp = date
+                
+                // Add to samples array for chart
+                if !self.heartRateSamples.contains(where: { $0.startDate == sample.startDate }) {
+                    self.heartRateSamples.append(sample)
+                    // Keep only last 100 samples for performance
+                    if self.heartRateSamples.count > 100 {
+                        self.heartRateSamples = Array(self.heartRateSamples.suffix(100))
+                    }
+                }
+            }
+        }
+        
+        self.heartRateAnchor = anchor
+    }
+    
+    func fetchAllData() {
+        fetchStepCount()
+        fetchActiveEnergyBurned()
+        fetchHeartRateSamples()
+        fetchLatestHeartRateSample()
+        startLiveHeartRateUpdates()
+    }
 }
 
-// MARK: - Main View
+// MARK: - Main Dashboard View
 
-struct HomeViewUI: View {
+struct HealthDashboardView: View {
     // Screen size detection for adaptive layout
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.verticalSizeClass) var verticalSizeClass
@@ -98,11 +165,9 @@ struct HomeViewUI: View {
     // For device rotation and size changes
     @State private var screenWidth: CGFloat = UIScreen.main.bounds.width
     
-    // Game data service
-    @StateObject private var gameDataService = GameDataService()
-    
-    // API configuration
-    private let imageBaseUrl = "https://yourapi.com/images/" // Change this to your actual image hosting URL
+    // HealthKit manager
+    @StateObject private var healthKitManager = HealthKitManager.shared
+    @State private var authorizationStatus: String = "Requesting authorization..."
     
     var body: some View {
         GeometryReader { geometry in
@@ -115,7 +180,7 @@ struct HomeViewUI: View {
                     VStack(alignment: .leading, spacing: getSpacing()) {
                         // Header
                         HStack {
-                            Text("Dashboard")
+                            Text("HeartGauge")
                                 .font(Font.custom("Jomhuria-Regular", size: isCompact() ? 45 : 55))
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
@@ -128,8 +193,10 @@ struct HomeViewUI: View {
                                     .foregroundColor(.white)
                             }
                             
-                            Button(action: {}) {
-                                Image(systemName: "gearshape.fill")
+                            Button(action: {
+                                healthKitManager.fetchAllData()
+                            }) {
+                                Image(systemName: "arrow.clockwise")
                                     .font(isCompact() ? .title3 : .title2)
                                     .foregroundColor(.white)
                                     .padding(.leading, isCompact() ? 5 : 10)
@@ -143,19 +210,23 @@ struct HomeViewUI: View {
                                 // Left column
                                 VStack(spacing: 15) {
                                     heartbeatCard
-                                    currentlyPlayingCard
+                                    stepsCard
                                 }
                                 .frame(width: geometry.size.width * 0.5)
                                 
                                 // Right column
-                                recentlyPlayedCard
-                                    .frame(width: geometry.size.width * 0.5 - 15)
+                                VStack(spacing: 15) {
+                                    activeEnergyCard
+                                    heartRateChartCard
+                                }
+                                .frame(width: geometry.size.width * 0.5 - 15)
                             }
                         } else {
                             // Standard vertical layout
                             heartbeatCard
-                            currentlyPlayingCard
-                            recentlyPlayedCard
+                            stepsCard
+                            activeEnergyCard
+                            heartRateChartCard
                         }
                         
                         Spacer(minLength: 20)
@@ -168,8 +239,20 @@ struct HomeViewUI: View {
             }
         }
         .onAppear {
-            // If needed, you could update the base URL for images
-            // gameDataService.updateImageBaseUrl(newBaseUrl: "https://newapi.com/images/")
+            requestHealthKitAuthorization()
+        }
+    }
+    
+    private func requestHealthKitAuthorization() {
+        healthKitManager.requestAuthorization { success, error in
+            DispatchQueue.main.async {
+                if success {
+                    self.authorizationStatus = "Authorized"
+                    self.healthKitManager.fetchAllData()
+                } else {
+                    self.authorizationStatus = "Authorization failed: \(error?.localizedDescription ?? "Unknown error")"
+                }
+            }
         }
     }
     
@@ -190,36 +273,47 @@ struct HomeViewUI: View {
     // MARK: - Card Components
     
     private var heartbeatCard: some View {
-        CardView(
-            minHeight: 180
-        ) {
+        CardView(minHeight: 180) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Image(systemName: "heart.fill")
                         .foregroundColor(.red)
                         .font(.title2)
                     
-                    Text("Current Heartbeat")
+                    Text("Current Heart Rate")
                         .font(.headline)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                 }
                 
                 HStack {
-                    Text("180 BPM")
-                        .font(isCompact() ? .title2 : .title)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
+                    if let heartRate = healthKitManager.currentHeartRate {
+                        Text("\(Int(heartRate)) BPM")
+                            .font(isCompact() ? .title2 : .title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                    } else {
+                        Text("-- BPM")
+                            .font(isCompact() ? .title2 : .title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white.opacity(0.7))
+                    }
                     
                     Spacer()
                     
-                    Text("Last checked: 1:04 PM")
-                        .font(.caption)
-                        .foregroundColor(.white.opacity(0.7))
+                    if let timestamp = healthKitManager.heartRateTimestamp {
+                        Text("Last: \(timestamp.formatted(date: .omitted, time: .shortened))")
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.7))
+                    } else {
+                        Text("Waiting for data...")
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.7))
+                    }
                 }
                 
-                // Custom Heartbeat Graph
-                HeartbeatView()
+                // Custom Heartbeat Graph using real data
+                HeartbeatView(heartRate: healthKitManager.currentHeartRate)
                     .frame(height: 90)
                     .padding(.top, 5)
             }
@@ -227,37 +321,84 @@ struct HomeViewUI: View {
         }
     }
     
-    private var currentlyPlayingCard: some View {
-        CardView(
-            minHeight: 120
-        ) {
+    private var stepsCard: some View {
+        CardView(minHeight: 120) {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Currently Playing:")
-                    .font(.headline)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
+                HStack {
+                    Image(systemName: "figure.walk")
+                        .foregroundColor(.green)
+                        .font(.title2)
+                    
+                    Text("Steps Today")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                }
                 
-                if let game = gameDataService.currentlyPlaying {
-                    HStack {
-                        CachedRemoteImage(url: game.imageUrl, placeholder: "download")
-                            .frame(width: isCompact() ? 50 : 80, height: isCompact() ? 50 : 80)
-                            .background(Color.white.opacity(0.2))
-                            .cornerRadius(10)
+                HStack {
+                    if let steps = healthKitManager.steps {
+                        Text("\(Int(steps))")
+                            .font(isCompact() ? .title2 : .title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
                         
-                        VStack(alignment: .leading) {
-                            Text(game.title)
-                                .font(isCompact() ? .body : .title3)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                            Text(game.playTime)
-                                .font(.subheadline)
-                                .foregroundColor(.white.opacity(0.7))
-                        }
-                        
-                        Spacer()
+                        Text("steps")
+                            .font(.body)
+                            .foregroundColor(.white.opacity(0.7))
+                    } else {
+                        Text("Loading...")
+                            .font(.body)
+                            .foregroundColor(.white.opacity(0.7))
                     }
-                } else {
-                    Text("No game currently playing")
+                    
+                    Spacer()
+                    
+                    // Progress indicator (assuming 10,000 step goal)
+                    if let steps = healthKitManager.steps {
+                        let progress = min(steps / 10000, 1.0)
+                        CircularProgressView(progress: progress)
+                            .frame(width: 40, height: 40)
+                    }
+                }
+            }
+            .padding()
+        }
+    }
+    
+    private var activeEnergyCard: some View {
+        CardView(minHeight: 120) {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Image(systemName: "flame.fill")
+                        .foregroundColor(.orange)
+                        .font(.title2)
+                    
+                    Text("Active Energy")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                }
+                
+                HStack {
+                    if let energy = healthKitManager.activeEnergy {
+                        Text("\(Int(energy))")
+                            .font(isCompact() ? .title2 : .title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                        
+                        Text("kcal")
+                            .font(.body)
+                            .foregroundColor(.white.opacity(0.7))
+                    } else {
+                        Text("Loading...")
+                            .font(.body)
+                            .foregroundColor(.white.opacity(0.7))
+                    }
+                    
+                    Spacer()
+                    
+                    Text("Today")
+                        .font(.caption)
                         .foregroundColor(.white.opacity(0.7))
                 }
             }
@@ -265,20 +406,46 @@ struct HomeViewUI: View {
         }
     }
     
-    private var recentlyPlayedCard: some View {
-        CardView(
-            minHeight: 250
-        ) {
+    private var heartRateChartCard: some View {
+        CardView(minHeight: 250) {
             VStack(alignment: .leading, spacing: 15) {
-                Text("Recently played:")
+                Text("Heart Rate (24h)")
                     .font(.headline)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                 
-                VStack(alignment: .leading, spacing: isCompact() ? 20 : 20) {
-                    ForEach(gameDataService.recentlyPlayed) { game in
-                        AdvancedGameRow(game: game, isCompact: isCompact())
+                if !healthKitManager.heartRateSamples.isEmpty {
+                    Chart(healthKitManager.heartRateSamples, id: \.startDate) { sample in
+                        LineMark(
+                            x: .value("Time", sample.startDate),
+                            y: .value("BPM", sample.quantity.doubleValue(for: HKUnit(from: "count/min")))
+                        )
+                        .interpolationMethod(.monotone)
+                        .foregroundStyle(.red)
                     }
+                    .frame(height: 150)
+                    .chartXAxis {
+                        AxisMarks(values: .stride(by: .hour, count: 6)) {
+                            AxisValueLabel(format: .dateTime.hour())
+                                .foregroundStyle(.white.opacity(0.7))
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks {
+                            AxisValueLabel()
+                                .foregroundStyle(.white.opacity(0.7))
+                        }
+                    }
+                } else {
+                    VStack {
+                        Image(systemName: "chart.line.uptrend.xyaxis")
+                            .font(.title)
+                            .foregroundColor(.white.opacity(0.5))
+                        Text("Loading heart rate data...")
+                            .foregroundColor(.white.opacity(0.7))
+                    }
+                    .frame(height: 150)
+                    .frame(maxWidth: .infinity)
                 }
             }
             .padding()
@@ -288,38 +455,27 @@ struct HomeViewUI: View {
 
 // MARK: - Supporting Components
 
-// Advanced Game Row Component
-struct AdvancedGameRow: View {
-    let game: Game
-    let isCompact: Bool
+// Circular Progress View
+struct CircularProgressView: View {
+    let progress: Double
     
     var body: some View {
-        HStack {
-            CachedRemoteImage(url: game.imageUrl)
-                .frame(width: isCompact ? 32 : 40, height: isCompact ? 32 : 40)
-                .background(Color.white.opacity(0.2))
-                .cornerRadius(10)
+        ZStack {
+            Circle()
+                .stroke(lineWidth: 3)
+                .opacity(0.3)
+                .foregroundColor(.white)
             
-            VStack(alignment: .leading, spacing: isCompact ? 1 : 2) {
-                Text(game.title)
-                    .font(isCompact ? .callout : .body)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                
-                Text(game.playTime)
-                    .font(isCompact ? .caption2 : .caption)
-                    .foregroundColor(.white.opacity(0.7))
-            }
+            Circle()
+                .trim(from: 0.0, to: CGFloat(min(progress, 1.0)))
+                .stroke(style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
+                .foregroundColor(.white)
+                .rotationEffect(Angle(degrees: 270.0))
             
-            Spacer()
-            
-            Button(action: {}) {
-                Image(systemName: "play.fill")
-                    .foregroundColor(.white)
-                    .padding(isCompact ? 6 : 8)
-                    .background(Color.white.opacity(0.2))
-                    .cornerRadius(isCompact ? 6 : 8)
-            }
+            Text("\(Int(progress * 100))%")
+                .font(.caption2)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
         }
     }
 }
@@ -358,9 +514,10 @@ struct CardView<Content: View>: View {
     }
 }
 
-// Heartbeat View Component
+// Enhanced Heartbeat View Component
 struct HeartbeatView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    let heartRate: Double?
     
     var body: some View {
         GeometryReader { geometry in
@@ -371,30 +528,34 @@ struct HeartbeatView: View {
                 
                 path.move(to: CGPoint(x: 0, y: midY))
                 
-                // Calculate number of heartbeat patterns based on width
-                let patternWidth: CGFloat = isCompact() ? 60 : 80
+                // Calculate pattern based on heart rate (higher HR = more frequent patterns)
+                let basePatternWidth: CGFloat = isCompact() ? 60 : 80
+                let hrMultiplier = heartRate != nil ? max(0.5, min(2.0, (heartRate! / 100.0))) : 1.0
+                let patternWidth = basePatternWidth / hrMultiplier
+                
                 let patterns = max(1, Int(width / patternWidth))
                 
                 // Create a more natural-looking heartbeat pattern
                 for i in 0..<patterns {
                     let startX = width / CGFloat(patterns) * CGFloat(i)
                     let scale = isCompact() ? 0.8 : 1.0
+                    let amplitude = heartRate != nil ? max(0.5, min(1.5, (heartRate! / 80.0))) : 1.0
                     
                     // Flat line
                     path.addLine(to: CGPoint(x: startX + 10 * scale, y: midY))
                     
                     // P wave
-                    path.addLine(to: CGPoint(x: startX + 15 * scale, y: midY - 5 * scale))
+                    path.addLine(to: CGPoint(x: startX + 15 * scale, y: midY - 5 * scale * amplitude))
                     path.addLine(to: CGPoint(x: startX + 20 * scale, y: midY))
                     
                     // QRS complex
-                    path.addLine(to: CGPoint(x: startX + 25 * scale, y: midY - 5 * scale))
-                    path.addLine(to: CGPoint(x: startX + 30 * scale, y: midY + 30 * scale)) // R peak
-                    path.addLine(to: CGPoint(x: startX + 35 * scale, y: midY - 15 * scale))
+                    path.addLine(to: CGPoint(x: startX + 25 * scale, y: midY - 5 * scale * amplitude))
+                    path.addLine(to: CGPoint(x: startX + 30 * scale, y: midY + 30 * scale * amplitude)) // R peak
+                    path.addLine(to: CGPoint(x: startX + 35 * scale, y: midY - 15 * scale * amplitude))
                     path.addLine(to: CGPoint(x: startX + 40 * scale, y: midY))
                     
                     // T wave
-                    path.addLine(to: CGPoint(x: startX + 50 * scale, y: midY + 10 * scale))
+                    path.addLine(to: CGPoint(x: startX + 50 * scale, y: midY + 10 * scale * amplitude))
                     path.addLine(to: CGPoint(x: startX + 60 * scale, y: midY))
                     
                     // Flat line to end
@@ -410,7 +571,17 @@ struct HeartbeatView: View {
     }
 }
 
+// Main Content View
+struct ContentView: View {
+    var body: some View {
+        NavigationStack {
+            HealthDashboardView()
+                .navigationBarHidden(true)
+        }
+    }
+}
+
 // Preview
 #Preview {
-    HomeViewUI()
+    ContentView()
 }

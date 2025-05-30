@@ -29,7 +29,7 @@ struct GoogleSignInButtonView: View {
 
                 if isLoggedIn {
 
-                    HomeViewUI()
+                    HealthDashboardView()
 
                 } else {
 
