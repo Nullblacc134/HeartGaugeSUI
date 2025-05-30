@@ -1,6 +1,4 @@
 import SwiftUI
-import GoogleSignIn
-
 struct MainTabView: View {
     @State private var selectedTab = 0
     let username: String // Receive the username
