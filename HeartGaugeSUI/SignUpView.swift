@@ -82,13 +82,10 @@ struct SignUpView: View {
                         VStack(spacing: 16) {
                             // App Icon
                             ZStack {
-                                Circle()
-                                    .fill(Color.white.opacity(0.2))
-                                    .frame(width: 80, height: 80)
-                                
-                                Image(systemName: "heart.fill")
+
+                                Image(systemName: "Untitled-2-removebg-preview")
                                     .font(.system(size: 36))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.black)
                             }
                             .scaleEffect(1.0)
                             .animation(.spring(response: 0.6, dampingFraction: 0.8), value: isLoading)
@@ -555,14 +552,6 @@ extension DateFormatter {
 
 // MARK: - Preview
 
-struct ContentView: View {
-    var body: some View {
+#Preview {
       SignUpView()
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
 }

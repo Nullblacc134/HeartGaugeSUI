@@ -152,7 +152,7 @@ struct ContentViewUI: View {
                         }
                         
                         // Register button
-                        NavigationLink(destination: SignUpViewUI()) {
+                        NavigationLink(destination: SignUpView()) {
                             Text("Register New Account")
                                 .frame(maxWidth: 280)
                                 .padding()

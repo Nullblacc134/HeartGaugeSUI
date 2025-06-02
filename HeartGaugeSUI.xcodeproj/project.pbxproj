@@ -10,7 +10,6 @@
 		F4057AD62D3ADB8200410732 /* Jomhuria-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4057AD52D3ADB8200410732 /* Jomhuria-Regular.ttf */; };
 		F40ACACB2D9DAA1C006FDDEE /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = F40ACACA2D9DAA1C006FDDEE /* GoogleSignIn */; };
 		F40ACACD2D9DAA1C006FDDEE /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F40ACACC2D9DAA1C006FDDEE /* GoogleSignInSwift */; };
-		F40ACACF2D9F0435006FDDEE /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40ACACE2D9F0435006FDDEE /* LoginPage.swift */; };
 		F4110D9D2D47F05A009837AE /* RecentlyPlayed.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4110D9C2D47F05A009837AE /* RecentlyPlayed.swift */; };
 		F4110D9F2D495495009837AE /* SettingsUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4110D9E2D495495009837AE /* SettingsUI.swift */; };
 		F4110DA12D49563B009837AE /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4110DA02D49563B009837AE /* SignUpView.swift */; };
@@ -28,7 +27,6 @@
 /* Begin PBXFileReference section */
 		F4057AD32D3AD98600410732 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F4057AD52D3ADB8200410732 /* Jomhuria-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Jomhuria-Regular.ttf"; sourceTree = "<group>"; };
-		F40ACACE2D9F0435006FDDEE /* LoginPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
 		F4110D9C2D47F05A009837AE /* RecentlyPlayed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyPlayed.swift; sourceTree = "<group>"; };
 		F4110D9E2D495495009837AE /* SettingsUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsUI.swift; sourceTree = "<group>"; };
 		F4110DA02D49563B009837AE /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
@@ -79,7 +77,6 @@
 				F4057AD32D3AD98600410732 /* Info.plist */,
 				F459CD0B2D38405C0085F721 /* HeartGaugeSUIApp.swift */,
 				F459CD0D2D38405C0085F721 /* ContentView.swift */,
-				F40ACACE2D9F0435006FDDEE /* LoginPage.swift */,
 				F45947E12D5297E3003A55B9 /* ForgotPasswordView.swift */,
 				F4110DA02D49563B009837AE /* SignUpView.swift */,
 				F4CCC1F32D39904900F6520C /* HomeViewUI.swift */,
@@ -187,7 +184,6 @@
 				F4D014E32DCE7086001984B6 /* SwiftUIView.swift in Sources */,
 				F4CCC1F42D39904900F6520C /* HomeViewUI.swift in Sources */,
 				F459CD0E2D38405C0085F721 /* ContentView.swift in Sources */,
-				F40ACACF2D9F0435006FDDEE /* LoginPage.swift in Sources */,
 				F4110D9F2D495495009837AE /* SettingsUI.swift in Sources */,
 				F4110DA12D49563B009837AE /* SignUpView.swift in Sources */,
 				F4110DA32D495D0D009837AE /* ProfileView.swift in Sources */,

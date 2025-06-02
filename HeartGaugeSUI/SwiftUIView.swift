@@ -21,10 +21,11 @@ struct SwiftUIView: View {
                 
                 VStack(spacing: 20){
                     
-                    Image(systemName: "heart.fill")
+                    Image(systemName: "Untitled-2-removebg-preview")
                         .resizable()
-                        .frame(width: 100, height: 100)
-                        .foregroundColor(.white)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 150, height: 150)
+                        .foregroundColor(.black)
                     
                     Text("HeartGauge")
                         .font(.largeTitle)
