@@ -36,8 +36,7 @@ struct MyApp: App {
               WindowGroup {
 
 //                  GoogleSignInButtonView()
-                  SwiftUIView()
-
+                  ContentViewUI(signOut: {})
 
               }
 

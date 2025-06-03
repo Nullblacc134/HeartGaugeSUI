@@ -106,64 +106,66 @@ struct HomeViewUI: View {
     
     var body: some View {
         GeometryReader { geometry in
-            ZStack {
-                // Background with improved color
-                Color(red: 98/255, green: 92/255, blue: 229/255)
-                    .ignoresSafeArea()
-                
-                ScrollView {
-                    VStack(alignment: .leading, spacing: getSpacing()) {
-                        // Header
-                        HStack {
-                            Text("Dashboard")
-                                .font(Font.custom("Jomhuria-Regular", size: isCompact() ? 45 : 55))
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                            
-                            Spacer()
-                            
-                            Button(action: {}) {
-                                Image(systemName: "bell.fill")
-                                    .font(isCompact() ? .title3 : .title2)
+            ScrollView{
+                ZStack {
+                    // Background with improved color
+                    Color(red: 98/255, green: 92/255, blue: 229/255)
+                        .ignoresSafeArea()
+                    
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: getSpacing()) {
+                            // Header
+                            HStack {
+                                Text("Dashboard")
+                                    .font(Font.custom("Jomhuria-Regular", size: isCompact() ? 45 : 55))
+                                    .fontWeight(.bold)
                                     .foregroundColor(.white)
-                            }
-                            
-                            Button(action: {}) {
-                                Image(systemName: "gearshape.fill")
-                                    .font(isCompact() ? .title3 : .title2)
-                                    .foregroundColor(.white)
-                                    .padding(.leading, isCompact() ? 5 : 10)
-                            }
-                        }
-                        .padding(.bottom, 5)
-                        
-                        // Adapt layout based on orientation and size
-                        if isLandscapeOnIpad(geometry) {
-                            HStack(alignment: .top, spacing: 15) {
-                                // Left column
-                                VStack(spacing: 15) {
-                                    heartbeatCard
-                                    currentlyPlayingCard
-                                }
-                                .frame(width: geometry.size.width * 0.5)
                                 
-                                // Right column
-                                recentlyPlayedCard
-                                    .frame(width: geometry.size.width * 0.5 - 15)
+                                Spacer()
+                                
+                                Button(action: {}) {
+                                    Image(systemName: "bell.fill")
+                                        .font(isCompact() ? .title3 : .title2)
+                                        .foregroundColor(.white)
+                                }
+                                
+                                Button(action: {}) {
+                                    Image(systemName: "gearshape.fill")
+                                        .font(isCompact() ? .title3 : .title2)
+                                        .foregroundColor(.white)
+                                        .padding(.leading, isCompact() ? 5 : 10)
+                                }
                             }
-                        } else {
-                            // Standard vertical layout
-                            heartbeatCard
-                            currentlyPlayingCard
-                            recentlyPlayedCard
+                            .padding(.bottom, 5)
+                            
+                            // Adapt layout based on orientation and size
+                            if isLandscapeOnIpad(geometry) {
+                                HStack(alignment: .top, spacing: 15) {
+                                    // Left column
+                                    VStack(spacing: 15) {
+                                        heartbeatCard
+                                        currentlyPlayingCard
+                                    }
+                                    .frame(width: geometry.size.width * 0.5)
+                                    
+                                    // Right column
+                                    recentlyPlayedCard
+                                        .frame(width: geometry.size.width * 0.5 - 15)
+                                }
+                            } else {
+                                // Standard vertical layout
+                                heartbeatCard
+                                currentlyPlayingCard
+                                recentlyPlayedCard
+                            }
+                            
+                            Spacer(minLength: 20)
                         }
-                        
-                        Spacer(minLength: 20)
+                        .padding(isCompact() ? 15 : 20)
                     }
-                    .padding(isCompact() ? 15 : 20)
-                }
-                .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
-                    self.screenWidth = UIScreen.main.bounds.width
+                    .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+                        self.screenWidth = UIScreen.main.bounds.width
+                    }
                 }
             }
         }
