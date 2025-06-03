@@ -17,5 +17,10 @@
 	<array>
 		<string>Jomhuria-Regular.ttf</string>
 	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UILaunchScreen</key>
+		<string></string>
+	</dict>
 </dict>
 </plist>
