@@ -16,7 +16,7 @@ struct SignUpView: View {
     @State private var showDatePicker = false
     @State private var showSuccessAlert = false
     @State private var fieldErrors: [String: String] = [:]
-    
+    @Environment(\.dismiss) private var dismiss
     @FocusState private var focusedField: Field?
     
     enum Field {
@@ -82,7 +82,6 @@ struct SignUpView: View {
                         VStack(spacing: 16) {
                             // App Icon
                             ZStack {
-
                                 Image(systemName: "Untitled-2-removebg-preview")
                                     .font(.system(size: 36))
                                     .foregroundColor(.black)
@@ -276,6 +275,24 @@ struct SignUpView: View {
                                 .animation(.easeInOut(duration: 0.2), value: isFormValid)
                             }
                             .disabled(!isFormValid || isLoading)
+                            
+                            // FIXED: Back To Login Button
+                            Button(action: {
+                                dismiss() // ✅ This will go back to the previous screen (Login)
+                            }) {
+                                Text("Back To Login")
+                                    .font(.headline)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 50)
+                                    .background(Color.clear)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .stroke(Color.white.opacity(0.8), lineWidth: 1.5)
+                                    )
+                            }
+                            .padding(.top, 8)
                             
                             // Terms and Privacy
                             VStack(spacing: 8) {
