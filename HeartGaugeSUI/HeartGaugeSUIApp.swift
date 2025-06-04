@@ -9,7 +9,7 @@ import SwiftUI
 import GoogleSignIn
 
 @main
-struct MyApp: App {
+struct HeartGaugeSUIApp: App {
     
     init() {
 
@@ -37,6 +37,7 @@ struct MyApp: App {
 
 //                  GoogleSignInButtonView()
                   ContentViewUI(signOut: {})
+
 
               }
 

@@ -1,95 +1,4 @@
 import SwiftUI
-struct MainTabView: View {
-    @State private var selectedTab = 0
-    let username: String // Receive the username
-
-    let signOut: () -> Void // Closure to handle sign-out
-    
-    var body: some View {
-        NavigationView {
-            ZStack {
-                // Background color matching your app
-                Color(red: 0.4, green: 0.4, blue: 0.9)
-                    .ignoresSafeArea()
-                
-                VStack {
-                    // Content area
-                    switch selectedTab {
-                    case 0:
-                        HomeViewUI()
-                    case 1:
-                        RecentlyPlayedUI()
-                    default:
-                        EmptyView()
-                    }
-                    
-                    // Navigation buttons at bottom
-                    VStack(spacing: 15) {
-                        Divider()
-                            .background(Color.white)
-                      
-                        
-                        // Google Sign up button
-                        
-                        HStack(spacing: 20) {
-                            ForEach(["Home", "Recently Played"].indices, id: \.self) { index in
-                                Button(action: {
-                                    withAnimation {
-                                        selectedTab = index
-                                    }
-                                }) {
-                                    Text(["Home", "Gaming Logs"][index])
-                                        .frame(maxWidth: .infinity)
-                                        .padding(.vertical, 12)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .fill(Color.white.opacity(selectedTab == index ? 0.3 : 0.2))
-                                        )
-                                        .foregroundColor(.white)
-                                        .font(.system(size: 16, weight: .medium))
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                        .padding(.bottom, 20)
-                    }
-                }
-            }
-            .navigationBarHidden(true)
-        }
-    }
-}
-
-// New ProfileView
-struct ProfileView: View {
-    var body: some View {
-        VStack {
-            Text("Profile")
-                .font(.title)
-                .foregroundColor(.white)
-                .padding()
-            
-            // Add profile content here
-            Spacer()
-        }
-    }
-}
-
-// Updated SettingsView
-struct SettingsView: View {
-    var body: some View {
-        VStack {
-            Text("Settings")
-                .font(.title)
-                .foregroundColor(.white)
-                .padding()
-            
-            // Add settings content here
-            Spacer()
-        }
-    }
-}
-
 
 
 // Updated ContentView to include navigation after login
@@ -111,7 +20,7 @@ struct ContentViewUI: View {
                     .ignoresSafeArea()
                 
                 if isLoggedIn {
-                    MainTabView(username: username, signOut: signOut)
+                    HomeViewUI()
                 } else {
                     // Your existing login view content
                     VStack(spacing: 20) {
