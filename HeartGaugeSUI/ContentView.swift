@@ -8,7 +8,9 @@ struct ContentViewUI: View {
     @State private var isActive: Bool = false
     @State private var showSplash = true
     @State private var isPasswordVisible: Bool = false
-
+    @State private var showSignUp = false
+    @State private var showForgotPassword = false
+    
     let signOut: () -> Void
     
     var body: some View {
@@ -115,9 +117,7 @@ struct ContentViewUI: View {
                                 .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isLoggedIn)
                                 
                                 // Register Button
-                                Button(action: {
-                                    SignUpView()
-                                }) {
+                                NavigationLink(destination: SignUpView()) {
                                     HStack {
                                         Image(systemName: "person.badge.plus")
                                         Text("Create New Account")
@@ -137,9 +137,7 @@ struct ContentViewUI: View {
                             .padding(.horizontal, 40)
                             
                             // Forgot Password Link
-                            Button(action: {
-                               ForgotPasswordViewUI()
-                            }) {
+                            NavigationLink(destination: ForgotPasswordViewUI()) {
                                 Text("Forgot Password?")
                                     .font(.system(size: 16, weight: .medium))
                                     .foregroundColor(.white)
@@ -187,9 +185,11 @@ struct ContentViewUI: View {
                 }
             }
             .navigationBarHidden(true)
+            // Updated sheet presentations with proper navigation
+            }
         }
     }
-}
+
 
 // Custom TextField Component
 struct CustomTextFi: View {
@@ -307,7 +307,8 @@ struct ParticleView: View {
     }
 }
 
-// Placeholder views for navigation destinations can be removed or implemented as needed
+// MARK: - Placeholder Views for SignUp and ForgotPassword
+// You can replace these with your actual view implementations
 
 #Preview {
     ContentViewUI(signOut: {})

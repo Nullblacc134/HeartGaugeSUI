@@ -22,7 +22,6 @@
 		F4B977FA2D5686BE00D97ECA /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B977F92D5686BE00D97ECA /* NotificationsView.swift */; };
 		F4CCC1F22D398F3200F6520C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4CCC1F12D398F3100F6520C /* Assets.xcassets */; };
 		F4CCC1F42D39904900F6520C /* HomeViewUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CCC1F32D39904900F6520C /* HomeViewUI.swift */; };
-		F4D014E32DCE7086001984B6 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D014E22DCE7086001984B6 /* SwiftUIView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,7 +40,6 @@
 		F4B977F92D5686BE00D97ECA /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		F4CCC1F12D398F3100F6520C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F4CCC1F32D39904900F6520C /* HomeViewUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewUI.swift; sourceTree = "<group>"; };
-		F4D014E22DCE7086001984B6 /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,7 +85,6 @@
 				F4B977F92D5686BE00D97ECA /* NotificationsView.swift */,
 				F4110D9E2D495495009837AE /* SettingsUI.swift */,
 				F4110DA22D495D0D009837AE /* ProfileView.swift */,
-				F4D014E22DCE7086001984B6 /* SwiftUIView.swift */,
 				F4057AD52D3ADB8200410732 /* Jomhuria-Regular.ttf */,
 				F4CCC1F12D398F3100F6520C /* Assets.xcassets */,
 				F459CD112D38405E0085F721 /* Preview Content */,
@@ -185,7 +182,6 @@
 			files = (
 				F4110D9D2D47F05A009837AE /* RecentlyPlayed.swift in Sources */,
 				F4B977FA2D5686BE00D97ECA /* NotificationsView.swift in Sources */,
-				F4D014E32DCE7086001984B6 /* SwiftUIView.swift in Sources */,
 				F4CCC1F42D39904900F6520C /* HomeViewUI.swift in Sources */,
 				F459CD0E2D38405C0085F721 /* ContentView.swift in Sources */,
 				F4110D9F2D495495009837AE /* SettingsUI.swift in Sources */,

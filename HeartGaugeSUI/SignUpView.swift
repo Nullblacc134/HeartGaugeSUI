@@ -278,7 +278,7 @@ struct SignUpView: View {
                             
                             // FIXED: Back To Login Button
                             Button(action: {
-                                dismiss() // ✅ This will go back to the previous screen (Login)
+                                dismiss() 
                             }) {
                                 Text("Back To Login")
                                     .font(.headline)
