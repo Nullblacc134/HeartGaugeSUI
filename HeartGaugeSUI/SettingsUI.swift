@@ -145,7 +145,7 @@ struct SettingsUI: View {
         }
         .navigationBarHidden(true)
         .sheet(isPresented: $showingProfile) {
-            ProfileViewUI()
+            ProfileUpdateView()
         }
     }
 }

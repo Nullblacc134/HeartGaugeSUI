@@ -44,33 +44,35 @@ struct NotificationModel: Identifiable, Hashable {
 }
 
 struct NotificationsView: View {
+    @Environment(\.dismiss) private var dismiss
+    
     @State private var notifications: [NotificationModel] = [
         NotificationModel(
             type: .reward,
-            title: "Vista Rewards Club",
-            subtitle: "Earn Points without making a purchase",
-            description: "Complete your first mission today!",
-            date: "Dec 16, 2023",
+            title: "ReGauge Wave 1",
+            subtitle: "Wave One:",
+            description: "Lets Calm Down a Bit | Take a 5 minute breathing session.",
+            date: "Jun 05, 2025",
             isRead: false,
-            priority: .high
+            priority: .low
         ),
         NotificationModel(
             type: .reward,
-            title: "Vista Rewards Club",
-            subtitle: "Boost your points and unlock rewards",
-            description: "Keep paying with Vista to boost your points and unlock rewards. It's as simple as that.",
-            date: "Dec 12, 2023",
+            title: "ReGauge Wave 2",
+            subtitle: "Wave Two",
+            description: "3rd Party Soothing | Engage in Meditation",
+            date: "Jun 05, 2025",
             isRead: false,
             priority: .medium
         ),
         NotificationModel(
             type: .welcome,
-            title: "Vista Rewards Club",
-            subtitle: "Welcome to Vista rewards!",
-            description: "Now you're a member of Vista rewards club, start picking up points with every purchase.",
-            date: "Dec 8, 2023",
+            title: "ReGauge Wave 3",
+            subtitle: "Wave 3",
+            description: "Take a break | Your heart rate and game time is excessivley high. Get Off",
+            date: "Jun 05, 2025",
             isRead: true,
-            priority: .low
+            priority: .high
         )
     ]
     
@@ -81,7 +83,6 @@ struct NotificationsView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                // Gradient Background
                 LinearGradient(
                     gradient: Gradient(colors: [
                         Color.purple.opacity(0.8),
@@ -94,9 +95,20 @@ struct NotificationsView: View {
                 .ignoresSafeArea()
                 
                 VStack(spacing: 0) {
-                    // Header Section
                     VStack(spacing: 16) {
                         HStack {
+                            // Back Button
+                            Button(action: {
+                                dismiss()
+                            }) {
+                                Image(systemName: "chevron.left")
+                                    .font(.title2)
+                                    .foregroundColor(.white)
+                                    .padding(8)
+                                    .background(Color.white.opacity(0.1))
+                                    .clipShape(Circle())
+                            }
+                            
                             HStack(spacing: 12) {
                                 Image(systemName: "bell.fill")
                                     .font(.title2)
@@ -124,7 +136,6 @@ struct NotificationsView: View {
                             }
                         }
                         
-                        // Action Button
                         HStack {
                             Button("Mark All Read") {
                                 withAnimation(.easeInOut(duration: 0.3)) {
@@ -146,7 +157,6 @@ struct NotificationsView: View {
                     .padding(.top, 20)
                     .padding(.bottom, 24)
                     
-                    // Notifications List
                     ScrollView {
                         LazyVStack(spacing: 12) {
                             if notifications.isEmpty {
@@ -213,9 +223,7 @@ struct NotificationCard: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            // Main Card Content
             HStack(spacing: 16) {
-                // Icon and Priority Indicator
                 ZStack {
                     Circle()
                         .fill(notification.type.color.opacity(0.15))
@@ -231,7 +239,6 @@ struct NotificationCard: View {
                         .opacity(notification.priority == .high ? 1 : 0)
                 )
                 
-                // Content
                 VStack(alignment: .leading, spacing: 6) {
                     HStack {
                         Text(notification.title)
@@ -258,7 +265,6 @@ struct NotificationCard: View {
                         .multilineTextAlignment(.leading)
                 }
                 
-                // Unread Indicator
                 if !notification.isRead {
                     Circle()
                         .fill(Color.blue)
@@ -298,10 +304,8 @@ struct NotificationCard: View {
                     }
             )
             
-            // Action Button (revealed on swipe)
             if showingActions {
                 HStack(spacing: 8) {
-                    // Mark Read/Unread
                     Button(action: onToggleRead) {
                         Image(systemName: notification.isRead ? "envelope.badge.fill" : "envelope.open.fill")
                             .font(.title3)
@@ -318,15 +322,6 @@ struct NotificationCard: View {
     }
 }
 
-struct ContentView: View {
-    var body: some View {
+#Preview{
         NotificationsView()
     }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
-

@@ -32,7 +32,7 @@ struct ContentViewUI: View {
                 ParticleView()
                 
                 if isLoggedIn {
-                    ContentViewUI(signOut: {})
+                   HomeViewUI()
                 } else {
                     ScrollView {
                         VStack(spacing: 30) {
@@ -69,19 +69,19 @@ struct ContentViewUI: View {
                             }
                             .padding(.top, 40)
                             
-                            // Enhanced Input Section
+                            // Enhanced Input Section - Fields remain for UI but not required
                             VStack(spacing: 20) {
                                 // Username Field
                                 CustomTextFi(
                                     text: $username,
-                                    placeholder: "Username",
-                                    icon: ""
+                                    placeholder: "Username (Optional)",
+                                    icon: "person.fill"
                                 )
                                 
                                 // Password Field
                                 CustomSecureF(
                                     text: $password,
-                                    placeholder: "Password",
+                                    placeholder: "Password (Optional)",
                                     isVisible: $isPasswordVisible
                                 )
                             }
@@ -89,7 +89,7 @@ struct ContentViewUI: View {
                             
                             // Enhanced Buttons Section
                             VStack(spacing: 16) {
-                                HomeViewUI()
+                                // Login Button - Now works without validation
                                 Button(action: {
                                     withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                                         isLoggedIn = true
@@ -159,7 +159,10 @@ struct ContentViewUI: View {
                             
                             // Google Sign Up Button
                             Button(action: {
-                                // handleSignupButton()
+                                // This could also directly login without authentication
+                                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                    isLoggedIn = true
+                                }
                             }) {
                                 HStack(spacing: 12) {
                                     Image(systemName: "globe")
